@@ -2,12 +2,16 @@ package org.openengsb.core.workflow.drools.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 
 import org.apache.commons.io.FileUtils;
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.agent.KnowledgeAgent;
 import org.drools.agent.KnowledgeAgentConfiguration;
 import org.drools.agent.KnowledgeAgentFactory;
+import org.drools.builder.KnowledgeBuilderConfiguration;
+import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.io.ResourceChangeNotifier;
 import org.drools.io.ResourceChangeScanner;
 import org.drools.io.ResourceChangeScannerConfiguration;
@@ -27,15 +31,16 @@ public class KnowledgeResourceHandler {
                 + "xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\" "
                 + "xs:schemaLocation=\"http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd\" >"
                 + "<add> "
-                + "<resource source=\"%s\" type=\"DRL\"/> "
-                + "<resource source=\"%s\" type=\"DRF\"/> "
-                + "<resource source=\"%s\" type=\"BPMN2\"/> "
+                + "<resource source=\"file://%s\" type=\"DRL\"/> "
+                + "<resource source=\"file://%s\" type=\"DRF\"/> "
+                + "<resource source=\"file://%s\" type=\"BPMN2\"/> "
                 + "</add>"
                 + "</change-set>";
 
     private KnowledgeAgent kAgent;
     private ResourceChangeScanner changeScanner;
     private ResourceChangeNotifier changeNotifier;
+    private Integer scanInterval = 10;
 
     private File bpmnFolder;
     private File drfFolder;
@@ -45,8 +50,6 @@ public class KnowledgeResourceHandler {
         setupFolders();
         setupKAgent();
         setupFileScanner();
-        kAgent.applyChangeSet(ResourceFactory
-            .newClassPathResource("changeset.xml"));
         changeNotifier.start();
         changeScanner.start();
     }
@@ -67,9 +70,16 @@ public class KnowledgeResourceHandler {
         aconf.setProperty("drools.agent.scanResources", "true");
         aconf.setProperty("drools.agent.monitorChangeSetEvents", "true");
         aconf.setProperty("drools.agent.newInstance", "false");
+
+        KnowledgeBuilderConfiguration bconf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        bconf.setProperty("drools.dialect.java.compiler", "JANINO");
+
         KnowledgeAgent kAgent = KnowledgeAgentFactory.newKnowledgeAgent(
-            "OpenengsbAgent", aconf);
+            "OpenengsbAgent", KnowledgeBaseFactory.newKnowledgeBase(), aconf, bconf);
         kAgent.addEventListener(new LogKnowledgeAgentEventListener());
+        String changeset =
+            String.format(CHANGE_SET_TEMPLATE, drlFolder.getPath(), drfFolder.getPath(), bpmnFolder.getPath());
+        kAgent.applyChangeSet(ResourceFactory.newReaderResource(new StringReader(changeset)));
         this.kAgent = kAgent;
     }
 
@@ -79,7 +89,7 @@ public class KnowledgeResourceHandler {
 
         ResourceChangeScannerConfiguration scannerConf = changeScanner
             .newResourceChangeScannerConfiguration();
-        scannerConf.setProperty("drools.resource.scanner.interval", "10");
+        scannerConf.setProperty("drools.resource.scanner.interval", scanInterval.toString());
         changeScanner.configure(scannerConf);
     }
 
@@ -105,4 +115,9 @@ public class KnowledgeResourceHandler {
     public void setDrlFolderPath(String drlFolderPath) {
         drlFolder = new File(drlFolderPath);
     }
+
+    public void setScanInterval(Integer seconds) {
+        this.scanInterval = seconds;
+    }
+
 }

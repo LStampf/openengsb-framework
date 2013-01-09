@@ -1,0 +1,8 @@
+global org.openengsb.core.workflow.drools.DummyNotificationDomain notification
+global org.openengsb.core.workflow.drools.DummyExampleDomain example
+global org.openengsb.core.workflow.drools.DummyTest test
+global org.openengsb.core.workflow.drools.DummyBuild build
+global org.openengsb.core.workflow.drools.DummyDeploy deploy
+global org.openengsb.core.workflow.drools.DummyReport report
+global org.openengsb.core.workflow.drools.DummyService myservice
+global org.openengsb.domain.example.ExampleDomain example2
