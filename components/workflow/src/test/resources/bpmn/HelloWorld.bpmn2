@@ -13,12 +13,12 @@
              xmlns:tns="http://www.jboss.org/drools">
 
 
-  <process processType="Private" isExecutable="true" id="knowledgeagent.HelloWorld" name="Sample Process" tns:packageName="knowledgeagent" >
+  <process processType="Private" isExecutable="true" id="HelloWorld" name="HelloWorld">
 
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
     <scriptTask id="_2" name="Script" >
-      <script>System.out.println(msg +" Hello Wold BPMN2");</script>
+      <script>System.out.println("Hello BPMN2");</script>
     </scriptTask>
     <endEvent id="_3" name="End" >
         <terminateEventDefinition/>
@@ -31,7 +31,7 @@
   </process>
 
   <bpmndi:BPMNDiagram>
-    <bpmndi:BPMNPlane bpmnElement="knowledgeagent.HelloWorld" >
+    <bpmndi:BPMNPlane bpmnElement="HelloWorld" >
       <bpmndi:BPMNShape bpmnElement="_1" >
         <dc:Bounds x="16" y="16" width="48" height="48" />
       </bpmndi:BPMNShape>

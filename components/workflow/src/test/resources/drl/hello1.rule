@@ -14,6 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+package org.openengsb
+
+import org.openengsb.core.api.Event
+
+global org.openengsb.core.workflow.drools.DummyNotificationDomain notification;
+global org.openengsb.core.workflow.drools.DummyExampleDomain example;
+global org.openengsb.core.workflow.drools.DummyService myservice;
 
 rule "Hello1"
 when
@@ -22,3 +29,4 @@ then
 	example.doSomething("Hello World");
 	notification.notify("Hello");
 	myservice.call();
+end

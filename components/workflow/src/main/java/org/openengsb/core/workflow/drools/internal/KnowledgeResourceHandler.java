@@ -55,8 +55,9 @@ public class KnowledgeResourceHandler {
     }
 
     public void destroy() {
-        changeNotifier.stop();
         changeScanner.stop();
+        changeNotifier.stop();
+        kAgent.dispose();
     }
 
     public KnowledgeBase getKnowledgeBase() {
