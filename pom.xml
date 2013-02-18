@@ -109,7 +109,6 @@
     <!-- OpenEngSB ConfigPersistence Modules -->
     <module>persistence/context</module>
     <module>persistence/connector</module>
-    <module>persistence/rulebase</module>
     <!-- OpenEngSB Infrastructure Modules -->
     <module>infrastructure/jpa</module>
     <module>infrastructure/jms</module>

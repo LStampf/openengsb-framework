@@ -24,6 +24,9 @@
          type="RuleFlow" name="Flow Test" id="floweventtest" package-name="org.openengsb" routerLayout="2" >
 
   <header>
+    <globals>
+      <global identifier="example" type="org.openengsb.core.workflow.drools.DummyExampleDomain" />               
+    </globals> 
   </header>
 
   <nodes>

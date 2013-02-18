@@ -32,6 +32,16 @@
         <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" />
       </variable>
     </variables>
+    <imports>
+      <import name="org.openengsb.core.workflow.api.model.Value" />
+    </imports>    
+    <globals>
+      <global identifier="build" type="org.openengsb.core.workflow.drools.DummyBuild" />
+      <global identifier="deploy" type="org.openengsb.core.workflow.drools.DummyDeploy" />
+      <global identifier="report" type="org.openengsb.core.workflow.drools.DummyReport" />
+      <global identifier="notification" type="org.openengsb.core.workflow.drools.DummyNotificationDomain" /> 
+      <global identifier="test" type="org.openengsb.core.workflow.drools.DummyTest" />                 
+    </globals>
   </header>
 
   <nodes>

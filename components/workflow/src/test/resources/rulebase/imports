@@ -1,7 +1,0 @@
-org.openengsb.core.api.Event
-org.openengsb.core.workflow.api.model.Value
-org.openengsb.core.workflow.drools.WorkflowHelper
-org.openengsb.core.workflow.drools.OsgiHelper
-org.openengsb.core.workflow.api.model.ProcessBag
-org.openengsb.core.workflow.api.model.RemoteEvent
-org.openengsb.core.api.context.ContextHolder

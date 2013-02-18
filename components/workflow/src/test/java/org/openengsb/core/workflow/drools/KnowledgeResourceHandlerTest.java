@@ -47,7 +47,11 @@ public class KnowledgeResourceHandlerTest {
         copyResources();
         handler.setUp();
 
+<<<<<<< Updated upstream
         KnowledgeBase kbase = handler.getKnowledgeBase();
+=======
+        KnowledgeBase kbase = handler.getKnowledgeBase(); 
+>>>>>>> Stashed changes
         assertNotNull(kbase.getProcess("simpleFlow"));
         assertNotNull(kbase.getProcess("HelloWorld"));
         assertNotNull(kbase.getRule("org.openengsb", "Hello1"));
@@ -56,10 +60,16 @@ public class KnowledgeResourceHandlerTest {
     @Test
     public void testRunningInstance_shouldDeployArtifacts() throws IOException, InterruptedException {
         handler.setUp();
+<<<<<<< Updated upstream
 
         copyResources();
         Thread.sleep(1500);
 
+=======
+        copyResources();
+        Thread.sleep(1500);
+        
+>>>>>>> Stashed changes
         KnowledgeBase kbase = handler.getKnowledgeBase();
         assertNotNull(kbase.getProcess("simpleFlow"));
         assertNotNull(kbase.getProcess("HelloWorld"));

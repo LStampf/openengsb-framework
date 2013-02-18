@@ -25,26 +25,6 @@
   <!-- Allows us to use system properties as variables in this configuration file -->
   <ext:property-placeholder placeholder-prefix="$[" placeholder-suffix="]" />
 
-  <reference id="rulePersistence" interface="org.openengsb.core.api.persistence.ConfigPersistenceService"
-    filter="(configuration.id=RULEBASE)" />
-
-  <reference id="globalPersistence" interface="org.openengsb.core.api.persistence.ConfigPersistenceService"
-    filter="(configuration.id=GLOBAL)" />
-
-  <reference id="importPersistence" interface="org.openengsb.core.api.persistence.ConfigPersistenceService"
-    filter="(configuration.id=IMPORT)" />
-
-  <bean class="org.openengsb.core.workflow.drools.internal.persistence.PersistenceRuleManager" id="ruleManager"
-    init-method="init">
-    <property name="rulePersistence" ref="rulePersistence" />
-    <property name="globalPersistence" ref="globalPersistence" />
-    <property name="importPersistence" ref="importPersistence" />
-  </bean>
-
-  <service interface="org.openengsb.core.workflow.api.RuleManager">
-    <ref component-id="ruleManager" />
-  </service>
-
   <service>
     <interfaces>
       <value>org.openengsb.core.workflow.api.WorkflowService</value>
@@ -105,13 +85,6 @@
 
   <reference id="contextService" interface="org.openengsb.core.api.context.ContextCurrentService" />
   <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
-
-  <service interface="org.openengsb.core.workflow.api.EventRegistrationService">
-    <bean class="org.openengsb.core.workflow.drools.internal.RegistrationServiceImpl">
-      <property name="ruleManager" ref="ruleManager" />
-      <property name="instanceId" value="registrationService" />
-    </bean>
-  </service>
 
   <service id="workflowDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
     <bean class="org.openengsb.core.workflow.drools.internal.WorkflowDeployerService" init-method="init">

@@ -4,7 +4,13 @@
          xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
          type="RuleFlow" name="Test flow in background" id="backgroundFlow" package-name="org.openengsb" routerLayout="2" >
 
-  <header>
+  <header>    
+    <imports>
+      <import name="org.openengsb.core.workflow.api.model.ProcessBag" />
+    </imports>
+    <globals>
+      <global identifier="example" type="org.openengsb.core.workflow.drools.DummyExampleDomain" />               
+    </globals>    
     <variables>
       <variable name="event1value" >
         <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="TestObject" />

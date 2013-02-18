@@ -24,6 +24,12 @@
          type="RuleFlow" name="Flow Test" id="flowtest" package-name="org.openengsb" routerLayout="2" >
 
   <header>
+    <imports>
+      <import name="org.openengsb.core.api.context.ContextHolder" />
+    </imports>
+    <globals>
+      <global identifier="example" type="org.openengsb.core.workflow.drools.DummyExampleDomain" />               
+    </globals>     
   </header>
 
   <nodes>

@@ -33,18 +33,6 @@
     <config name="org.openengsb.settings">
       openengsb.version.number=${project.version}
     </config>
-    <config name="org.openengsb.persistence.config-rulebase">
-      backend.id=rule-persistence
-      configuration.id=RULEBASE
-    </config>
-	<config name="org.openengsb.persistence.config-global">
-      backend.id=global-persistence
-      configuration.id=GLOBAL
-    </config>
-	<config name="org.openengsb.persistence.config-import">
-      backend.id=import-persistence
-      configuration.id=IMPORT
-    </config>
     <config name="org.openengsb.persistence.config-connector">
       backend.id=connector-jpa-persistence
       configuration.id=CONNECTOR
@@ -154,7 +142,6 @@
     <!-- OpenEngSB ConfigPersistence Implementations -->
     <bundle start-level='40'>mvn:org.openengsb.persistence/org.openengsb.persistence.context/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.persistence/org.openengsb.persistence.connector/${project.version}</bundle>
-    <bundle start-level='40'>mvn:org.openengsb.persistence/org.openengsb.persistence.rulebase/${project.version}</bundle>
     <!-- OpenEngSB Core Features -->
     <bundle start-level='30'>mvn:org.openengsb.framework/org.openengsb.framework.api/${openengsb.api.version}</bundle>
     <bundle start-level='30'>mvn:org.openengsb.framework/org.openengsb.framework.weaver.service/${project.version}</bundle>
