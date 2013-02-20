@@ -19,15 +19,12 @@ package org.openengsb.core.workflow.drools;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -39,23 +36,13 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
 import org.mockito.InOrder;
-import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.test.NullDomain;
-import org.openengsb.core.test.NullEvent3;
-import org.openengsb.core.workflow.api.RuleBaseException;
 import org.openengsb.core.workflow.api.model.InternalWorkflowEvent;
 import org.openengsb.core.workflow.api.model.ProcessBag;
-import org.openengsb.core.workflow.api.model.RuleBaseElementId;
-import org.openengsb.core.workflow.api.model.RuleBaseElementType;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 
@@ -83,57 +70,22 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 
     @Test
     public void testProcessEvent_shouldTriggerHelloWorld() throws Exception {
-        Event event = new Event();
+        Event event = new Event("hello-context");
         service.processEvent(event);
-        verify(notification, atLeast(1)).notify("Hello");
         verify((DummyExampleDomain) domains.get("example"), atLeast(1)).doSomething("Hello World");
+        verify(notification, atLeast(1)).notify("Hello");       
         verify(myservice, atLeast(1)).call();
     }
 
     @Test
     public void testUseLog_shouldLog() throws Exception {
-        Event event = new Event("test-context");
+        Event event = new Event("log-context");
         service.processEvent(event);
         verify(logService).doSomething("42");
     }
 
     @Test
-    public void testUpdateRule_shouldWork() throws Exception {
-        manager.update(new RuleBaseElementId(RuleBaseElementType.Rule, "hello1"),
-            "when\n Event ( name == \"test-context\")\n then \n example.doSomething(\"21\");");
-        Event event = new Event("test-context");
-        service.processEvent(event);
-        verify(logService).doSomething("21");
-    }
-
-    @Test
     public void testUseLogContent_shouldCallLogService() throws Exception {
-        Event event = new Event("test-context");
-        service.processEvent(event);
-        verify(logService, times(2)).doSomething(anyString());
-    }
-
-    @Test
-    public void testAddInvalidRule_shouldNotModifyRulebase() throws Exception {
-        try {
-            manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "hello"), "this*is_invalid");
-            fail("expected Exception");
-        } catch (RuleBaseException e) {
-            // expected
-        }
-        Event event = new Event("test-context");
-        service.processEvent(event);
-        verify(logService, times(2)).doSomething(anyString());
-    }
-
-    @Test
-    public void testInvalidModifyRule_shouldNotModifyRulebase() throws Exception {
-        try {
-            manager.update(new RuleBaseElementId(RuleBaseElementType.Rule, "hello1"), "this*is_invalid");
-            fail("expected Exception");
-        } catch (RuleBaseException e) {
-            assertThat(e.getCause(), nullValue());
-        }
         Event event = new Event("test-context");
         service.processEvent(event);
         verify(logService, times(2)).doSomething(anyString());
@@ -206,63 +158,8 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 
     @Test
     public void testStartWorkflowTriggeredByEvent_shouldStartWorkflow() throws Exception {
-        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "test42"), "when\n" + "  Event()\n" + "then\n"
-                + "  kcontext.getKnowledgeRuntime().startProcess(\"ci\");\n");
-        service.processEvent(new Event());
+        service.processEvent(new Event("startCi"));
         assertThat(service.getRunningFlows().isEmpty(), is(false));
-    }
-
-    @Test
-    public void testRegisterWorkflowTrigger_shouldRegisterTrigger() throws Exception {
-        service.registerFlowTriggerEvent(new Event("triggerEvent"), "ci");
-        service.processEvent(new Event());
-        service.processEvent(new Event("triggerEvent"));
-        assertThat(service.getRunningFlows().size(), is(1));
-    }
-
-    @Test
-    public void testRegisterWorkflowTriggerWithSubclass_shouldRegisterTrigger() throws Exception {
-        NullEvent3 testEvent = new NullEvent3();
-        testEvent.setName("triggerEvent");
-        testEvent.setTestProperty("foo");
-        testEvent.setTestStringProp("bar");
-        testEvent.setTestBoolProp(true);
-        testEvent.setTestIntProp(42);
-        service.registerFlowTriggerEvent(testEvent, "ci");
-        service.processEvent(new Event());
-        service.processEvent(testEvent);
-        assertThat(service.getRunningFlows().size(), is(1));
-    }
-
-    @Test
-    public void testRegisterWorkflowTriggerIgnoreNullFields_shouldRegisterTrigger() throws Exception {
-        NullEvent3 testEvent = new NullEvent3();
-        testEvent.setName("triggerEvent");
-        service.registerFlowTriggerEvent(testEvent, "ci");
-        service.processEvent(new Event());
-        service.processEvent(testEvent);
-        assertThat(service.getRunningFlows().size(), is(1));
-    }
-
-    @Test
-    public void testRegisterWorkflowTriggerIgnoreNullFieldsMixed_shouldRegisterTrigger() throws Exception {
-        NullEvent3 testEvent = new NullEvent3();
-        testEvent.setName("triggerEvent");
-        testEvent.setTestStringProp("bar");
-        testEvent.setTestIntProp(42);
-        service.registerFlowTriggerEvent(testEvent, "ci");
-        service.processEvent(new Event());
-        service.processEvent(testEvent);
-        assertThat(service.getRunningFlows().size(), is(1));
-    }
-
-    @Test(timeout = 3000)
-    public void testRegisterWorkflowTriggerWithFlowStartedEvent_shouldRegisterTrigger() throws Exception {
-        service.registerFlowTriggerEvent(new Event("triggerEvent"), "flowStartedEvent");
-        service.processEvent(new Event("triggerEvent"));
-        for (Long id : service.getRunningFlows()) {
-            service.waitForFlowToFinishIndefinitely(id);
-        }
     }
 
     @Test
@@ -286,15 +183,6 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 
     @Test
     public void testProcessEventsConcurrently_shouldProcessBothEvents() throws Exception {
-        manager.addImport(TestEvent.class.getName());
-        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "concurrent test"), "when\n"
-                + "TestEvent(value == \"0\")\n"
-                + "then\n"
-                + "example.doSomething(\"concurrent\");");
-        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "concurrent test1"), "when\n"
-                + "TestEvent(value == \"1\")\n"
-                + "then\n"
-                + "Thread.sleep(1000);");
         Callable<Void> task = makeProcessEventTask(new TestEvent("1"));
         Callable<Void> task2 = makeProcessEventTask(new TestEvent("0"));
         ExecutorService executor = Executors.newCachedThreadPool();
@@ -359,7 +247,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         assertThat(finished, is(false));
     }
 
-    @Test
+   /* @Test
     public void testResponseRule_shouldProcessEvent() throws Exception {
         NullDomain nullDomainImpl = mock(NullDomain.class);
         registerServiceViaId(nullDomainImpl, "test-connector", NullDomain.class, Domain.class);
@@ -448,7 +336,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         verify(auditingMock).onNodeStart(eq("ci"), eq(id), eq("deployProject"));
         service.waitForFlowToFinishIndefinitely(id);
     }
-
+*/
     private static class BuildSuccess extends Event {
     }
 

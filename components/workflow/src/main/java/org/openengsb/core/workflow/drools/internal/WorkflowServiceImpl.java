@@ -210,10 +210,6 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         return executor.submit(call);
     }
 
-
-
-
-
     @Override
     public void waitForFlowToFinishIndefinitely(long id) throws InterruptedException, WorkflowException {
         StatefulKnowledgeSession session = getSessionForCurrentContext();
@@ -377,6 +373,12 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
             }
         }
         return ret;
+    }
+
+    public void closeSessions() {
+        for (StatefulKnowledgeSession session : sessions.values()) {
+            session.dispose();
+        }
     }
 
     public void setTaskbox(TaskboxService taskbox) {
