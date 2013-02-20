@@ -59,11 +59,7 @@ public class KnowledgeResourceHandler {
         changeNotifier.stop();
         kAgent.dispose();
     }
-<<<<<<< Updated upstream
 
-=======
-    
->>>>>>> Stashed changes
     public KnowledgeBase getKnowledgeBase() {
         return kAgent.getKnowledgeBase();
     }

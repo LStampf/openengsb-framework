@@ -37,10 +37,6 @@
       backend.id=connector-jpa-persistence
       configuration.id=CONNECTOR
     </config>
-    <config name="org.openengsb.persistence.config-workflow">
-      backend.id=workflow-persistence
-      configuration.id=WORKFLOW
-    </config>
     <config name="org.openengsb.persistence.config-context">
       backend.id=contextFilePersistenceService
       configuration.id=CONTEXT
