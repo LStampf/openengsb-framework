@@ -20,6 +20,7 @@ package org.openengsb.core.workflow.drools;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -27,6 +28,8 @@ import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.mock;
+import static org.hamcrest.CoreMatchers.nullValue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,13 +39,19 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
 import org.mockito.InOrder;
+import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.workflow.api.model.InternalWorkflowEvent;
 import org.openengsb.core.workflow.api.model.ProcessBag;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 
@@ -82,13 +91,6 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         Event event = new Event("log-context");
         service.processEvent(event);
         verify(logService).doSomething("42");
-    }
-
-    @Test
-    public void testUseLogContent_shouldCallLogService() throws Exception {
-        Event event = new Event("test-context");
-        service.processEvent(event);
-        verify(logService, times(2)).doSomething(anyString());
     }
 
     @Test
@@ -160,15 +162,6 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     public void testStartWorkflowTriggeredByEvent_shouldStartWorkflow() throws Exception {
         service.processEvent(new Event("startCi"));
         assertThat(service.getRunningFlows().isEmpty(), is(false));
-    }
-
-    @Test
-    public void testIfEventIsRetracted_shouldWork() throws Exception {
-        Event event = new Event();
-        service.processEvent(event);
-        event = new Event("test-context");
-        service.processEvent(event);
-        verify(logService, times(2)).doSomething("Hello World");
     }
 
     @Test
@@ -247,33 +240,20 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         assertThat(finished, is(false));
     }
 
-   /* @Test
+    @Test
     public void testResponseRule_shouldProcessEvent() throws Exception {
         NullDomain nullDomainImpl = mock(NullDomain.class);
         registerServiceViaId(nullDomainImpl, "test-connector", NullDomain.class, Domain.class);
 
-        manager.addImport(NullDomain.class.getName());
-        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "response-test"), ""
-                + "when\n"
-                + "   e : Event()\n"
-                + "then\n"
-                + "   NullDomain origin = (NullDomain) OsgiHelper.getResponseProxy(e, NullDomain.class);"
-                + "   origin.nullMethod(42);");
-
-        Event event = new Event();
+        Event event = new Event("response-context");
         event.setOrigin("test-connector");
         service.processEvent(event);
         verify(nullDomainImpl).nullMethod(42);
     }
-
+    
+    
     @Test
     public void testTriggerExceptionInEventProcessing_shouldNotKeepLocked() throws Exception {
-        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "response-test"), ""
-                + "when\n"
-                + "   e : Event(name==\"evil\")\n"
-                + "then\n"
-                + "   String testxx = null;"
-                + "   testxx.toString();"); // provoke NPE
         try {
             service.processEvent(new Event("evil"));
             fail("evil Event should trigger Exception");
@@ -304,12 +284,6 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 
     @Test
     public void testSerializeConsequenceException_shouldReturnString() throws Exception {
-        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "response-test"), ""
-                + "when\n"
-                + "   e : Event(name==\"evil\")\n"
-                + "then\n"
-                + "   String testxx = null;"
-                + "   testxx.toString();"); // provoke NPE
         try {
             service.processEvent(new Event("evil"));
             fail("evil Event should trigger Exception");
@@ -336,7 +310,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         verify(auditingMock).onNodeStart(eq("ci"), eq(id), eq("deployProject"));
         service.waitForFlowToFinishIndefinitely(id);
     }
-*/
+
     private static class BuildSuccess extends Event {
     }
 

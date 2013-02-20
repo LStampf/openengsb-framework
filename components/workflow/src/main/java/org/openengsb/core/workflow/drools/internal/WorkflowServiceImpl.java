@@ -42,6 +42,7 @@ import org.drools.event.process.ProcessStartedEvent;
 import org.drools.event.rule.BeforeActivationFiredEvent;
 import org.drools.event.rule.DefaultAgendaEventListener;
 import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.definition.rule.Rule;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.ProcessInstance;
@@ -97,6 +98,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         for (AuditingDomain connector : auditingConnectors) {
             connector.onEvent(event);
         }
+
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         FactHandle factHandle = null;
         try {

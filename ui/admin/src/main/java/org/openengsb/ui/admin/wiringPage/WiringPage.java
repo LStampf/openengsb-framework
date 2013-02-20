@@ -91,9 +91,6 @@ public class WiringPage extends BasePage {
     @PaxWicketBean(name = "serviceManager")
     private ConnectorManager serviceManager;
 
-    @PaxWicketBean(name = "ruleManager")
-    private RuleManager ruleManager;
-
     private DropDownChoice<Class<? extends Domain>> domains;
     private LinkTree globals;
     private LinkTree endpoints;

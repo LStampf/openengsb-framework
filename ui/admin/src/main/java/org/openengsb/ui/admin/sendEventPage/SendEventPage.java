@@ -50,13 +50,10 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
-import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.core.workflow.api.WorkflowException;
 import org.openengsb.core.workflow.api.WorkflowService;
 import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.ui.admin.basePage.BasePage;
-import org.openengsb.ui.admin.ruleEditorPanel.RuleEditorPanel;
-import org.openengsb.ui.admin.ruleEditorPanel.RuleManagerProvider;
 import org.openengsb.ui.admin.util.ValueConverter;
 import org.openengsb.ui.common.editor.AttributeEditorUtil;
 import org.openengsb.ui.common.util.MethodUtil;
@@ -68,7 +65,7 @@ import org.slf4j.LoggerFactory;
 
 @SecurityAttribute(key = "org.openengsb.ui.component", value = "WORKFLOW_USER")
 @PaxWicketMountPoint(mountPoint = "events")
-public class SendEventPage extends BasePage implements RuleManagerProvider {
+public class SendEventPage extends BasePage {
 
     private static final long serialVersionUID = -6450762722099473732L;
 
@@ -84,8 +81,6 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
     private WorkflowService eventService;
 
     private DropDownChoice<Class<?>> dropDownChoice;
-    @PaxWicketBean(name = "ruleManager")
-    private RuleManager ruleManager;
 
     @PaxWicketBean(name = "auditing")
     private AuditingDomain auditing;
@@ -228,7 +223,6 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         auditsContainer.add(listView);
         add(auditsContainer);
         add(new WorkflowStartPanel("workflowStartPanel"));
-        add(new RuleEditorPanel("ruleEditor", this));
     }
 
     private RepeatingView createEditorPanelForClass(Class<?> theClass) {
@@ -273,10 +267,5 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
             LOGGER.error("building event instance failed", e);
             return null;
         }
-    }
-
-    @Override
-    public RuleManager getRuleManager() {
-        return ruleManager;
     }
 }

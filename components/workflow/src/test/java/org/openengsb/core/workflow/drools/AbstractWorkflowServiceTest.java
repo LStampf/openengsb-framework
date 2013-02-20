@@ -122,7 +122,7 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
         service.closeSessions();
         handler.destroy();
     }
-    
+
     private void setupDomainsAndOtherServices() throws Exception {
         createDomainMocks();
         myservice = mock(DummyService.class);

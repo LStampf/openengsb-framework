@@ -88,8 +88,6 @@ import org.openengsb.ui.admin.model.ArgumentConversionException;
 import org.openengsb.ui.admin.model.MethodCall;
 import org.openengsb.ui.admin.model.MethodId;
 import org.openengsb.ui.admin.model.ServiceId;
-import org.openengsb.ui.admin.organizeGlobalsPage.OrganizeGlobalsPage;
-import org.openengsb.ui.admin.organizeImportsPage.OrganizeImportsPage;
 import org.openengsb.ui.admin.util.MethodComparator;
 import org.openengsb.ui.common.model.LocalizableStringModel;
 import org.ops4j.pax.wicket.api.PaxWicketBean;

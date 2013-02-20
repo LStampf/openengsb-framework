@@ -18,7 +18,7 @@ package org.openengsb
 
 import org.openengsb.core.api.Event
 
-rule "Hello1"
+rule "startCi"
 when
 	Event(name == "startCi")
 then
