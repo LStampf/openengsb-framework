@@ -81,14 +81,6 @@ public interface WorkflowService extends OpenEngSBService {
     boolean waitForFlowToFinish(long id, long timeout) throws InterruptedException, WorkflowException;
 
     /**
-     * this method adds a rule to the rulebase that always starts workflow(s) when a certain event is raised. All fields
-     * or the event that is handed in are checked excluding those, which are set {@code null}.
-     *
-     * @throws WorkflowException when there is a problem while adding the new rule
-     */
-    void registerFlowTriggerEvent(Event event, String... flowIds) throws WorkflowException;
-
-    /**
      * executes a workflow with the given name, and adds the processbag to its parameters. The processBag may be altered
      * by the workflow during execution. The modified processBag is returned as soon as the workflow-execution is
      * finished.
