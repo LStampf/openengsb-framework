@@ -38,7 +38,6 @@ import org.openengsb.ui.admin.serviceListPage.ServiceListPage;
 import org.openengsb.ui.admin.taskOverview.TaskOverview;
 import org.openengsb.ui.admin.testClient.TestClient;
 import org.openengsb.ui.admin.userService.UserListPage;
-import org.openengsb.ui.admin.wiringPage.WiringPage;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 @SuppressWarnings("serial")
@@ -70,8 +69,6 @@ public class MenuTemplate extends Panel {
         addMenuItem("ServiceListPage", ServiceListPage.class, ServiceListPage.PAGE_NAME_KEY,
             ServiceListPage.PAGE_DESCRIPTION_KEY);
         addMenuItem("TaskOverview", TaskOverview.class, TaskOverview.PAGE_NAME_KEY, TaskOverview.PAGE_DESCRIPTION_KEY);
-        addMenuItem("WiringPage", WiringPage.class, WiringPage.PAGE_NAME_KEY, WiringPage.PAGE_DESCRIPTION_KEY,
-            "ROLE_ADMIN");
         addMenuItem("EdbClient", EdbClient.class, EdbClient.PAGE_NAME_KEY, EdbClient.PAGE_DESCRIPTION_KEY);
     }
 

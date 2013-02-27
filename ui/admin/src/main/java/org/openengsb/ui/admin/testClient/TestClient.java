@@ -171,9 +171,6 @@ public class TestClient extends BasePage {
             "org.openengsb.ui.component", "SERVICE_EDITOR"));
         serviceManagementContainer.add(makeServiceList());
 
-        Form<Object> organize = createOrganizeForm();
-        add(organize);
-
         Form<MethodCall> form = createMethodCallForm();
         add(form);
 
@@ -397,43 +394,6 @@ public class TestClient extends BasePage {
     /**
      * creates the form for organize section (globals, imports)
      */
-    private Form<Object> createOrganizeForm() {
-        Form<Object> organize = new Form<Object>("organizeForm");
-        organize.setOutputMarkupId(true);
-
-        @SuppressWarnings("serial")
-        AjaxButton globalsButton = new AjaxButton("globalsButton", organize) {
-            @Override
-            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                setResponsePage(OrganizeGlobalsPage.class);
-            }
-
-            @Override
-            protected void onError(AjaxRequestTarget target, Form<?> form) {
-                LOGGER.warn("Error during submit of globalButton ajax link");
-            }
-        };
-        globalsButton.setOutputMarkupId(true);
-        organize.add(globalsButton);
-
-        @SuppressWarnings("serial")
-        AjaxButton importsButton = new AjaxButton("importsButton", organize) {
-            @Override
-            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                setResponsePage(OrganizeImportsPage.class);
-            }
-
-            @Override
-            protected void onError(AjaxRequestTarget target, Form<?> form) {
-                LOGGER.warn("Error during submit of importsButton page");
-            }
-        };
-        importsButton.setOutputMarkupId(true);
-        organize.add(importsButton);
-
-        return organize;
-    }
-
     @SuppressWarnings("serial")
     private ListView<DomainProvider> makeServiceList() {
         return new ListView<DomainProvider>("domains", domainProvider) {

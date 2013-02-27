@@ -36,8 +36,8 @@
     <ref component-id="workflowService" />
   </service>
 
-  <bean id="workflowService" class="org.openengsb.core.workflow.drools.internal.WorkflowServiceImpl">
-    <property name="rulemanager" ref="ruleManager" />
+  <bean id="workflowService" class="org.openengsb.core.workflow.drools.internal.WorkflowServiceImpl" destroy-method="closeSessions">
+    <property name="knowledgeResourceHandler" ref="knowledgeResourceHandler" />
     <property name="bundleContext" ref="blueprintBundleContext" />
     <property name="taskbox" ref="taskbox" />
     <property name="auditingConnectors" ref="auditingConnectors" />
@@ -46,8 +46,12 @@
 
   <reference-list id="eventReceivers" availability="optional" interface="org.openengsb.core.api.EventSupport" />
 
-  <bean id="knowledgeResourceHandler" class="org.openengsb.core.workflow.drools.internal.KnowledgeResourceHandler">
-
+  <bean id="knowledgeResourceHandler" class="org.openengsb.core.workflow.drools.internal.KnowledgeResourceHandler"
+    destroy-method="destroy" init-method="setUp">
+    <property name="bpmnFolderPath" value="$[karaf.base]/etc/bpmn" />
+    <property name="drfFolderPath" value="$[karaf.base]/etc/drf" />	
+    <property name="drlFolderPath" value="$[karaf.base]/etc/drl" />
+    <property name="scanInterval" value="10" />			
   </bean>
 
   <reference-list id="auditingConnectors" availability="optional"
@@ -85,13 +89,6 @@
 
   <reference id="contextService" interface="org.openengsb.core.api.context.ContextCurrentService" />
   <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
-
-  <service id="workflowDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
-    <bean class="org.openengsb.core.workflow.drools.internal.WorkflowDeployerService" init-method="init">
-      <property name="ruleManager" ref="ruleManager" />
-      <property name="bundleContext" ref="blueprintBundleContext" />
-    </bean>
-  </service>
 
   <bean class="org.openengsb.core.workflow.drools.internal.DomainEventsServicesManager" init-method="start"
     destroy-method="stop">

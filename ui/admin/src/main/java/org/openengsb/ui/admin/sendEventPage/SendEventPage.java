@@ -57,7 +57,6 @@ import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.util.ValueConverter;
 import org.openengsb.ui.common.editor.AttributeEditorUtil;
 import org.openengsb.ui.common.util.MethodUtil;
-import org.openengsb.ui.common.workflow.WorkflowStartPanel;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
@@ -222,7 +221,6 @@ public class SendEventPage extends BasePage {
         };
         auditsContainer.add(listView);
         add(auditsContainer);
-        add(new WorkflowStartPanel("workflowStartPanel"));
     }
 
     private RepeatingView createEditorPanelForClass(Class<?> theClass) {

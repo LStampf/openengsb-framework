@@ -64,7 +64,6 @@ import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyConfigPersistenceService;
 import org.openengsb.core.test.UserManagerStub;
 import org.openengsb.core.util.DefaultOsgiUtilsService;
-import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.labs.delegation.service.ClassProvider;
@@ -97,7 +96,6 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
     protected UsernamePasswordServiceImpl authConnector;
     protected PaxWicketSpringBeanComponentInjector defaultPaxWicketInjector;
     protected AuditingDomain auditingDomain;
-    protected RuleManager ruleManager;
 
     @Before
     public void makeContextMock() throws Exception {
@@ -170,8 +168,6 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         context.putBean("connectorList", makeServiceReferenceList(Domain.class));
         auditingDomain = mock(AuditingDomain.class);
         context.putBean("auditing", auditingDomain);
-        ruleManager = mock(RuleManager.class);
-        context.putBean("ruleManager", ruleManager);
     }
 
     protected void mockAuthentication() throws UserNotFoundException, UserExistsException {
